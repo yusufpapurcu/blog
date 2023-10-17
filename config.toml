@@ -9,7 +9,7 @@ description = ""
 default_language = "en"
 
 # The site theme to use.
-theme = "zola-bearblog"
+theme = "emily_zola_theme"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = false
@@ -38,7 +38,7 @@ taxonomies = [
 highlight_code = true
 
 # The theme to use for code highlighting.
-highlight_theme = "idle"
+highlight_theme = "base16-ocean-dark"
 
 # When set to "true", emoji aliases translated to their corresponding
 # Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
