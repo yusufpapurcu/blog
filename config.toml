@@ -38,12 +38,14 @@ taxonomies = [
 highlight_code = true
 
 # The theme to use for code highlighting.
-highlight_theme = "base16-ocean-dark"
+highlight_theme = "base16-ocean-dark" 
 
 # When set to "true", emoji aliases translated to their corresponding
 # Unicode emoji equivalent in the rendered Markdown files. (e.g.: :smile: => 😄)
 render_emoji = false
 
-[[extra.main_menu]]
-name = "Blog"
-url = "@/blog/_index.md"
+[extra]
+# Author name, appears in footer.
+emily_author = "yusufpapurcu"
+
+emily_icon = "/images/logo.png"

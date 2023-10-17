@@ -1,12 +1,16 @@
 +++
-title = "about this site and author"
-date = 2020-01-01
+title = "About"
+date = 2023-10-17
 template = "post-page.html"
 +++
+Hello! I'm Yusuf. I try to put my writings into here as posts. I hope it droves me to write/do more things.
 
-## Hello Everybody 👋
+#### About me
+I'm a software engineer lives in **Porto/Portugal** currently. I'm 19 years old, even though I'm young I have couple of years of experience in software engineering. If you're interested here is my [LinkedIn](https://www.linkedin.com/in/yusufpapurcu/). Drop me a connection!
 
-```go
-// (best introduction ever)</br>
-I write code, play video games and watch anime.
-```
+Other than this fancy hobby (which unfortunately turned into a job) I love watching anime and reading manga. Not a diehard Japanese culture addict but I started to learn the language really long time ago and now I can understand when someone greets me xd.
+
+Also I play video games sometimes, mostly TFT and WoT(not "world of warcraft", "world of tanks"). Can't say I'm a good player overrall.
+#### About this blog
+I don't know what to write but I think it will be mainly about programming. Let's see how long this one will stay alive xd
+
