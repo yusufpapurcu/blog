@@ -11,7 +11,7 @@ So we kickstart the paper with the history of **Technical debt** definition. [Wa
 
 He also mentions that engineering organizations can went stand-still mode under highly unpaid TechDebt.
 
-We can say the TechDebt as a term means the negative side in tradeoff between Delivery Speed and Product Quality. It's important to **not** use this term as an excuse to engineers writing bad code.
+We can say the TechDebt as a term means the negative side in tradeoff between Delivery Speed and Quality (not always shows up in product level). It's important to **not** use this term as an excuse to engineers writing bad code.
 
 ---
 
