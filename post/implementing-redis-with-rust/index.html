@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+<title>Implementing Redis with Rust | Yusuf&#x27;s Blog</title>
+
+  <link rel="shortcut icon" type="image/png" href="&#x2F;images&#x2F;favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link id="stylesheet" rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<div class="header">
+  <div class="site_title">
+    <p><a href="/"><img class="icon" src="https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;images&#x2F;logo.png" alt="Yusuf&#x27;s Blog"
+                                                                                 width="70" height=auto ></a></p>
+    <p><a href="/">&nbsp;Yusuf&#x27;s Blog</a></p>
+  </div>
+  <div class="menu">
+    <a href="/post">archives</a>
+    &nbsp;&nbsp;<a href="/about">about</a>
+  </div>
+</div>
+
+<body onload="getTheme()">
+  <section class="section">
+    <div class="container">
+      
+<p>
+  <div class="title_postpage">Implementing Redis with Rust</div>
+</p>
+<p>
+  <div class="date_postpage">2024-03-24</div>
+  <div class="taxonomies_postpage">
+  
+  
+  </div>
+</p>
+
+<p>
+  <p><strong>Table of Contents:</strong></p>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#my-adventure-of-implementing-redis-in-rust">My adventure of implementing Redis in Rust</a>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#where-is-the-idea-comes-from">Where is the idea comes from?</a></li>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#searching-for-resources">Searching for resources</a></li>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#found-the-resource-lets-start">Found the resource, lets start!</a></li>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#end-of-the-entrance-post">End of the entrance post...</a></li>
+</ul>
+</li>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#skill-issues-with-event-loop">Skill issues with event loop</a>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#move-closure">Move closure</a></li>
+<li><a href="https://yusufpapurcu.com/post/implementing-redis-with-rust/#i-want-a-different-way-of-handling-concurrent-clients">I want a different way of handling concurrent clients</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="my-adventure-of-implementing-redis-in-rust">My adventure of implementing Redis in Rust</h2>
+<h3 id="where-is-the-idea-comes-from">Where is the idea comes from?</h3>
+<p>Lately I got an email from a big sized company HR providing some open positions, and one caught my eyes. A position in a team that builds <strong>a global low-latency key-value data store</strong>.</p>
+<p>That's the story where is the idea of trying to implement redis from start came in. Of course there was a background that why this topic interests me (Like following Phil Eaton, seeing his database related contents) but I won't dig deeper.</p>
+<h3 id="searching-for-resources">Searching for resources</h3>
+<p>So I started looking around for resources to get an idea about how to do it. Luckily after spending some time staring <a href="https://github.com/redis/redis">redis codebase</a> I found CodeCrafters, and their redis course.</p>
+<p>Good to mention for time being I'm not sponsored by CodeCrafters, I was using their campaign while writing this. I didn't even paid for it :D</p>
+<h3 id="found-the-resource-lets-start">Found the resource, lets start!</h3>
+<p>CodeCrafters supports multiple programming languages, but in between them I was interested in Rust and C#. But this time I'm choosing Rust. I flipped a coin to decide in between btw.</p>
+<p>Following the course is easy, it doesn't even require any git knowledge at all. You complete the task, push it to the remote and they test and mark the step as passed.</p>
+<p>In past I was using Exercism which followed a similar route, I think they were using a cli for this but git way of doing this is not bad as well.</p>
+<h3 id="end-of-the-entrance-post">End of the entrance post...</h3>
+<p>This one was the beginning of the journey, I am not planning to write for every small detail but while I go further in the course I will take notes here about the interesting and time consuming topics. </p>
+<p>My goal is leaving notes for myself but you're always welcome to read and suggest better way of doing things!</p>
+<h2 id="skill-issues-with-event-loop">Skill issues with event loop</h2>
+<h3 id="move-closure">Move closure</h3>
+<p>Everything was going cool until the task &quot;Handle concurrent clients&quot; come along. My first intention was just spawning a thread for every request and calling it a day. But while writing I realised I was using this move closure but didn't dig deeper what it <strong>exactly</strong> means.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>std::thread::spawn(</span><span style="color:#b48ead;">move </span><span>|| </span><span style="color:#96b5b4;">handle_connection</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> _stream));
+</span></code></pre>
+<p><a href="https://doc.rust-lang.org/book/ch16-01-threads.html?highlight=move#using-move-closures-with-threads">What I did was going directly to Holy Rust Book and searching for the usages of move closure and found it!</a></p>
+<p>(Yes it was my skill issue to realise we are passing the ownership into spawned thread)</p>
+<h3 id="i-want-a-different-way-of-handling-concurrent-clients">I want a different way of handling concurrent clients</h3>
+<p>Actually it was a different suggestion in the task, it was saying the original redis implementation uses &quot;event loop&quot; so maybe I can try that out too. Also spamming a new thread per request was not satisfying enough for my curiosity on the topic after hearing there is another way to do it.</p>
+<p>I started searching videos, blogs and talks about the topic. Here is two that helped me understanding the concept.</p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=8aGhZQkoFbQ">What the heck is the event loop anyway? | Philip Roberts | JSConf EU</a></li>
+<li><a href="https://rohitpaulk.com/articles/redis-3">https://rohitpaulk.com/articles/redis-3</a></li>
+</ul>
+<p>The problem was the ruby equivalent of <code>IO.Select</code> was not exists in the Rust std library. But luckily I found it under tokio!</p>
+<p><a href="https://github.com/tokio-rs/mio">https://github.com/tokio-rs/mio</a></p>
+<p>It even had the simple example I needed! But wait a second, it's not working...</p>
+<p>(after digging it for 30m I gave up and moved on)</p>
+<p>(but one day in future I will get back and learn how to use mio's event loop implementation)</p>
+
+  <hr class="hr_bottom"/>
+</p>
+
+
+
+
+    </div>
+  </section>
+</body>
+
+<div class="footer">
+  <a href="/">Yusuf&#x27;s Blog</a>&emsp;&copy; yusufpapurcu<br>
+  powered by <a href="https://www.getzola.org/">Zola</a>, theme <a
+    href="https://github.com/kyoheiu/emily_zola_theme">emily</a>.
+</div>
+
+</html>

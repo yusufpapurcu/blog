@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>Yusuf&#x27;s Blog</title>
+      <link>https://yusufpapurcu.com</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://yusufpapurcu.com/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 24 Mar 2024 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Implementing Redis with Rust</title>
+          <pubDate>Sun, 24 Mar 2024 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://yusufpapurcu.com/post/implementing-redis-with-rust/</link>
+          <guid>https://yusufpapurcu.com/post/implementing-redis-with-rust/</guid>
+          <description xml:base="https://yusufpapurcu.com/post/implementing-redis-with-rust/">&lt;p&gt;&lt;strong&gt;Table of Contents:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#my-adventure-of-implementing-redis-in-rust&quot;&gt;My adventure of implementing Redis in Rust&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#where-is-the-idea-comes-from&quot;&gt;Where is the idea comes from?&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#searching-for-resources&quot;&gt;Searching for resources&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#found-the-resource-lets-start&quot;&gt;Found the resource, lets start!&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#end-of-the-entrance-post&quot;&gt;End of the entrance post...&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#skill-issues-with-event-loop&quot;&gt;Skill issues with event loop&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#move-closure&quot;&gt;Move closure&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;implementing-redis-with-rust&#x2F;#i-want-a-different-way-of-handling-concurrent-clients&quot;&gt;I want a different way of handling concurrent clients&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;my-adventure-of-implementing-redis-in-rust&quot;&gt;My adventure of implementing Redis in Rust&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;where-is-the-idea-comes-from&quot;&gt;Where is the idea comes from?&lt;&#x2F;h3&gt;
+&lt;p&gt;Lately I got an email from a big sized company HR providing some open positions, and one caught my eyes. A position in a team that builds &lt;strong&gt;a global low-latency key-value data store&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;That&#x27;s the story where is the idea of trying to implement redis from start came in. Of course there was a background that why this topic interests me (Like following Phil Eaton, seeing his database related contents) but I won&#x27;t dig deeper.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;searching-for-resources&quot;&gt;Searching for resources&lt;&#x2F;h3&gt;
+&lt;p&gt;So I started looking around for resources to get an idea about how to do it. Luckily after spending some time staring &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;redis&#x2F;redis&quot;&gt;redis codebase&lt;&#x2F;a&gt; I found CodeCrafters, and their redis course.&lt;&#x2F;p&gt;
+&lt;p&gt;Good to mention for time being I&#x27;m not sponsored by CodeCrafters, I was using their campaign while writing this. I didn&#x27;t even paid for it :D&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;found-the-resource-lets-start&quot;&gt;Found the resource, lets start!&lt;&#x2F;h3&gt;
+&lt;p&gt;CodeCrafters supports multiple programming languages, but in between them I was interested in Rust and C#. But this time I&#x27;m choosing Rust. I flipped a coin to decide in between btw.&lt;&#x2F;p&gt;
+&lt;p&gt;Following the course is easy, it doesn&#x27;t even require any git knowledge at all. You complete the task, push it to the remote and they test and mark the step as passed.&lt;&#x2F;p&gt;
+&lt;p&gt;In past I was using Exercism which followed a similar route, I think they were using a cli for this but git way of doing this is not bad as well.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;end-of-the-entrance-post&quot;&gt;End of the entrance post...&lt;&#x2F;h3&gt;
+&lt;p&gt;This one was the beginning of the journey, I am not planning to write for every small detail but while I go further in the course I will take notes here about the interesting and time consuming topics. &lt;&#x2F;p&gt;
+&lt;p&gt;My goal is leaving notes for myself but you&#x27;re always welcome to read and suggest better way of doing things!&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;skill-issues-with-event-loop&quot;&gt;Skill issues with event loop&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;move-closure&quot;&gt;Move closure&lt;&#x2F;h3&gt;
+&lt;p&gt;Everything was going cool until the task &amp;quot;Handle concurrent clients&amp;quot; come along. My first intention was just spawning a thread for every request and calling it a day. But while writing I realised I was using this move closure but didn&#x27;t dig deeper what it &lt;strong&gt;exactly&lt;&#x2F;strong&gt; means.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;std::thread::spawn(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;move &lt;&#x2F;span&gt;&lt;span&gt;|| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;handle_connection&lt;&#x2F;span&gt;&lt;span&gt;(&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mut&lt;&#x2F;span&gt;&lt;span&gt; _stream));
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;book&#x2F;ch16-01-threads.html?highlight=move#using-move-closures-with-threads&quot;&gt;What I did was going directly to Holy Rust Book and searching for the usages of move closure and found it!&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;(Yes it was my skill issue to realise we are passing the ownership into spawned thread)&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;i-want-a-different-way-of-handling-concurrent-clients&quot;&gt;I want a different way of handling concurrent clients&lt;&#x2F;h3&gt;
+&lt;p&gt;Actually it was a different suggestion in the task, it was saying the original redis implementation uses &amp;quot;event loop&amp;quot; so maybe I can try that out too. Also spamming a new thread per request was not satisfying enough for my curiosity on the topic after hearing there is another way to do it.&lt;&#x2F;p&gt;
+&lt;p&gt;I started searching videos, blogs and talks about the topic. Here is two that helped me understanding the concept.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;www.youtube.com&#x2F;watch?v=8aGhZQkoFbQ&quot;&gt;What the heck is the event loop anyway? | Philip Roberts | JSConf EU&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;rohitpaulk.com&#x2F;articles&#x2F;redis-3&quot;&gt;https:&#x2F;&#x2F;rohitpaulk.com&#x2F;articles&#x2F;redis-3&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;The problem was the ruby equivalent of &lt;code&gt;IO.Select&lt;&#x2F;code&gt; was not exists in the Rust std library. But luckily I found it under tokio!&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;tokio-rs&#x2F;mio&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;tokio-rs&#x2F;mio&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;It even had the simple example I needed! But wait a second, it&#x27;s not working...&lt;&#x2F;p&gt;
+&lt;p&gt;(after digging it for 30m I gave up and moved on)&lt;&#x2F;p&gt;
+&lt;p&gt;(but one day in future I will get back and learn how to use mio&#x27;s event loop implementation)&lt;&#x2F;p&gt;
+</description>
+      </item>
+      <item>
+          <title>TechDebt Paper from Google</title>
+          <pubDate>Sun, 05 Nov 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://yusufpapurcu.com/post/techdebt/</link>
+          <guid>https://yusufpapurcu.com/post/techdebt/</guid>
+          <description xml:base="https://yusufpapurcu.com/post/techdebt/">&lt;p&gt;&lt;strong&gt;Table of Contents:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;techdebt&#x2F;#disclaimer&quot;&gt;Disclaimer&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;techdebt&#x2F;#introduction&quot;&gt;Introduction&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;techdebt&#x2F;#categories-of-tech-debt&quot;&gt;Categories of Tech Debt&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;techdebt&#x2F;#how-to-handle-tech-debts-my-ideas&quot;&gt;How to Handle Tech Debts? (my ideas)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;techdebt&#x2F;#how-to-handle-tech-debts-what-paper-says&quot;&gt;How to Handle Tech Debts? (what paper says)&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;disclaimer&quot;&gt;Disclaimer&lt;&#x2F;h2&gt;
+&lt;p&gt;This writing heavily involves my views, if you want to see the actual paper(5 pages), here is the sauce -&amp;gt; &lt;a href=&quot;https:&#x2F;&#x2F;www.computer.org&#x2F;csdl&#x2F;magazine&#x2F;so&#x2F;2023&#x2F;03&#x2F;10109339&#x2F;1MESXKyAYNO&quot;&gt;https:&#x2F;&#x2F;www.computer.org&#x2F;csdl&#x2F;magazine&#x2F;so&#x2F;2023&#x2F;03&#x2F;10109339&#x2F;1MESXKyAYNO&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;&#x2F;h2&gt;
+&lt;p&gt;We kickstart the paper with the history of &lt;strong&gt;Technical debt&lt;&#x2F;strong&gt; definition. &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ward_Cunningham&quot;&gt;Ward Cunningham&lt;&#x2F;a&gt; gives the definition in this sentence:&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Shipping first time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite. &lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;He also mentions that engineering organizations can went stand-still mode under highly unpaid TechDebt.&lt;&#x2F;p&gt;
+&lt;p&gt;We can say the TechDebt as a term means the negative side in tradeoff between Delivery Speed and Quality (not always shows up in product level). It&#x27;s important to &lt;strong&gt;not&lt;&#x2F;strong&gt; use this term as an excuse to engineers writing bad code.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;categories-of-tech-debt&quot;&gt;Categories of Tech Debt&lt;&#x2F;h2&gt;
+&lt;p&gt;Then we are moving into the research itself, Google collects data about the internal teams view on TechDebt through engineering satisfaction surveys.&lt;&#x2F;p&gt;
+&lt;p&gt;And from these surveys, they refined 10 categories of TechDebt.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Migration needed&#x2F;in progress.
+&lt;ul&gt;
+&lt;li&gt;I think this references things in project level, as an example migrating a temporary solution into proper place. It&#x27;s quite common to create quick (and non-properly placed) solutions to unblock product.&lt;&#x2F;li&gt;
+&lt;li&gt;Let&#x27;s imagine a example, you need to send settlement report emails into your clients. Proper way of doing this is exporting settlement data from settlement processing system and handling the report creation outside of that domain right? But in reality it&#x27;s quite common for settlement system to own this responsibility for some time until proper solution is ready.&lt;&#x2F;li&gt;
+&lt;li&gt;In the example it might be a big techdebt for engineers in settlement processing, but in the other hand it&#x27;s better to do this fast and unblock legal issues.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Documentation on projects and APIs.
+&lt;ul&gt;
+&lt;li&gt;I can relate to this easily. API documentation is a thing you could automate, but project documentation requires pure effort most of the time. And missing documentation slows down the team in the long run.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Testing
+&lt;ul&gt;
+&lt;li&gt;Not testing experimental features&#x2F;modules in your system might help to speedup development (not always). But once that experimental thingy start used seriously testing is a must.&lt;&#x2F;li&gt;
+&lt;li&gt;For long run having trustable tests helps changes to be applied much easily and without fear. Also (for me) tests could be considered a good part of documentation. Since they give a good idea about the behavior.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Code Quality
+&lt;ul&gt;
+&lt;li&gt;No one likes working on poorly designed code bases.&lt;&#x2F;li&gt;
+&lt;li&gt;Worth to mention code quality could decrease by time even you don&#x27;t change it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Cleanup of the Dead code. 
+&lt;ul&gt;
+&lt;li&gt;Features removed&#x2F;replaced in higher level but not cleaned up properly.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Code degradation
+&lt;ul&gt;
+&lt;li&gt;This is the part I mentioned in code quality. tbh they relate a lot and I&#x27;m having issues to differentiate them.&lt;&#x2F;li&gt;
+&lt;li&gt;Maybe we can say code quality is covers a higher scope. Degradation is just a sub-scope.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Team expertise on Project 
+&lt;ul&gt;
+&lt;li&gt;This happens after handovers and starting of the projects. &lt;&#x2F;li&gt;
+&lt;li&gt;If the team doesn&#x27;t grab the essence of the project they might fail to maintain, or even properly design it.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Unstable Dependencies
+&lt;ul&gt;
+&lt;li&gt;It explains itself quite a bit. Having a changing dependency might be exhausting. &lt;&#x2F;li&gt;
+&lt;li&gt;If it&#x27;s on a legacy&#x2F;on-maintenance project, exhausting effect gets buffed xd&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Migrations Poorly Executed
+&lt;ul&gt;
+&lt;li&gt;You might end up having this state between migrations or abandonment of a migration. Bad side is having to maintain different code bases doing similar things.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Release of a Project
+&lt;ul&gt;
+&lt;li&gt;As an example, rolling up a new feature without observability creates this type of techdebt. It&#x27;s a visible trade-off to take.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;All code has techdebts and the type of a technical debt could change between projects.&lt;&#x2F;p&gt;
+&lt;p&gt;Techdebt definition is includes the current and possible better version of the codebase.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-to-handle-tech-debts-my-ideas&quot;&gt;How to Handle Tech Debts? (my ideas)&lt;&#x2F;h2&gt;
+&lt;p&gt;In the part of measuring, paper goes and talks about their failing experiments. I will just write the doable way in my view.&lt;&#x2F;p&gt;
+&lt;p&gt;Create a TechDebt section in your work management tool, let engineers create, classify and rate techdebts they faced. This is a good and applicable way to measure tech debt from my understanding.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;how-to-handle-tech-debts-what-paper-says&quot;&gt;How to Handle Tech Debts? (what paper says)&lt;&#x2F;h2&gt;
+&lt;p&gt;To manage technical debt paper gives these three ways:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;TechDebt management framework.&lt;&#x2F;li&gt;
+&lt;li&gt;TechDebt management maturity model.
+&lt;ul&gt;
+&lt;li&gt;Reactive 
+&lt;ul&gt;
+&lt;li&gt;They don&#x27;t have any process against the techdebts.&lt;&#x2F;li&gt;
+&lt;li&gt;Doesn&#x27;t mean they don&#x27;t work on them, everyone works on techdebts. Reactive teams just doesn&#x27;t have a process in place to manage their techdebts.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Proactive 
+&lt;ul&gt;
+&lt;li&gt;They define and track techdebts. Also they rate their urgency and how important are they for relevant work.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Strategic
+&lt;ul&gt;
+&lt;li&gt;As a plus to proactive maturity, they identify&#x2F;address route causes and do proper decision making on them.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Structural
+&lt;ul&gt;
+&lt;li&gt;As a plus to strategic maturity, they standardize the techdebt management.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Evangelism on best practices to manage TechDebt.&lt;&#x2F;li&gt;
+&lt;li&gt;Proper tooling for identification and management of TechDebt.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;So that&#x27;s all from the paper. I&#x27;m on my way to try out classification and management procedures. Hope you read until here.&lt;&#x2F;p&gt;
+</description>
+      </item>
+      <item>
+          <title>MapReduce</title>
+          <pubDate>Sun, 29 Oct 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://yusufpapurcu.com/post/mapreduce/</link>
+          <guid>https://yusufpapurcu.com/post/mapreduce/</guid>
+          <description xml:base="https://yusufpapurcu.com/post/mapreduce/">&lt;p&gt;&lt;strong&gt;Table of Contents:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#1-this-part-is-from-mit-course&quot;&gt;1 This part is from MIT course&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#1-1-implement-simple-map-and-reduce-specification&quot;&gt;1-1 Implement simple Map and Reduce specification.&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#1-2-finish-the-implementation-contains-master-and-multiple-workers&quot;&gt;1-2 Finish the implementation contains master and multiple workers.&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#1-3-add-durability-against-the-worker-failures&quot;&gt;1-3 Add durability against the worker failures.&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-this-part-is-from-ddia-book&quot;&gt;2 This part is from DDIA book&lt;&#x2F;a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-1-from-syntax-perspective&quot;&gt;2-1 From syntax perspective&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-2-from-data-processing-perspective&quot;&gt;2-2 From data processing perspective&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-3-sort-merge-joins&quot;&gt;2-3 Sort merge joins&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-4-group-by-with-mapreduce&quot;&gt;2-4 Group by with MapReduce&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-5-handling-skew&quot;&gt;2-5 Handling skew&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;post&#x2F;mapreduce&#x2F;#2-6-map-side-joins&quot;&gt;2-6 Map side joins&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;1-this-part-is-from-mit-course&quot;&gt;1 This part is from MIT course&lt;&#x2F;h2&gt;
+&lt;p&gt;I&#x27;m studying about distributes systems and one of my resources is MIT Distributed systems course (6.824). In this course as a first lesson you read the map reduce paper (original one from google) and do a really simple example on top of already built application. So the tasks are:&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-1-implement-simple-map-and-reduce-specification&quot;&gt;1-1 Implement simple Map and Reduce specification.&lt;&#x2F;h3&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Yep it&#x27;s the same one in the paper, but bit simpler and sequentially processed one.&lt;&#x2F;p&gt;
+&lt;p&gt;I&#x27;m quite impressed how easy to create a specification for MapReduce. It&#x27;s really impressive to be able to define a simple task and run distributed on big data.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-2-finish-the-implementation-contains-master-and-multiple-workers&quot;&gt;1-2 Finish the implementation contains master and multiple workers.&lt;&#x2F;h3&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;Actually they have the implementation in place. Only thing you need to do is the writing the master. Some simple worker group code, just use channels and goroutines.&lt;&#x2F;p&gt;
+&lt;p&gt;The impressive part in here for me is how easy to manage work from the master. The abstraction was nicely done with small chunk of code. Also tests are impressive too. I didn&#x27;t think testing this kind of separated system to be that simple.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-3-add-durability-against-the-worker-failures&quot;&gt;1-3 Add durability against the worker failures.&lt;&#x2F;h3&gt;
+&lt;hr &#x2F;&gt;
+&lt;p&gt;In google&#x27;s paper it says for every MapReduce run there is 1.2 workers failing in average. Thinking that the durability is really important.&lt;&#x2F;p&gt;
+&lt;p&gt;So for this one impressive part is having the idempotent implementation. Because executing same job twice doesn&#x27;t effect the final solution it was much easier to handle errors. Also in original paper I read that google runs functions with backups, even the main program doesn&#x27;t fail it&#x27;s possible that backup finishes the work faster.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;2-this-part-is-from-ddia-book&quot;&gt;2 This part is from DDIA book&lt;&#x2F;h2&gt;
+&lt;p&gt;DDIA: Designing Data Intensive Applications&lt;&#x2F;p&gt;
+&lt;p&gt;There is two mentions to the MapReduce in here.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-1-from-syntax-perspective&quot;&gt;2-1 From syntax perspective&lt;&#x2F;h3&gt;
+&lt;p&gt;In this part, book compares SQL statements, MapReduce and MongoDB aggregation pipeline. Between these three MapReduce is the imperative one. The other two is declarative.&lt;&#x2F;p&gt;
+&lt;p&gt;Also it&#x27;s mentioned how useful MapReduce when it&#x27;s idempotent. But even though a declarative SQL allows engine to optimize functions much better.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-2-from-data-processing-perspective&quot;&gt;2-2 From data processing perspective&lt;&#x2F;h3&gt;
+&lt;p&gt;It mentions that MapReduce is really similar to the unix tooling. You have a splitter, then you map entries coming from splitting, after you done with it you reduce the results. The main advantage is you can run them in multiple workers across the cluster.&lt;&#x2F;p&gt;
+&lt;p&gt;Also mentions that usually single MapReduce is not enough for the wanted result. So it&#x27;s a common practice to chain jobs into each other. Just like pipelining unix commands.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-3-sort-merge-joins&quot;&gt;2-3 Sort merge joins&lt;&#x2F;h3&gt;
+&lt;p&gt;So in case of joining data into MapReduce workflow the book suggest to get a snapshot of the resource to be joined and include it inside the pipeline. So you can have your main data and join data included into same reduce worker. And even you can sort the files in a order to always have 1 metadata and records back to back. I don&#x27;t want to rewrite same example but it&#x27;s really well explained in book. (page 403) Most insane part for me is being able to do a complex operation in a really high performance and total abstraction. Imagine as a data analyst writing MapReduce specification, you don&#x27;t deal with most things.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-4-group-by-with-mapreduce&quot;&gt;2-4 Group by with MapReduce&lt;&#x2F;h3&gt;
+&lt;p&gt;Lol it&#x27;s literally picking the correct KEY to emit from the map. Reduce will do the grouping in the output file.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-5-handling-skew&quot;&gt;2-5 Handling skew&lt;&#x2F;h3&gt;
+&lt;p&gt;This is a new term to me. But basically it means handling the hot keys. Imagine you&#x27;re processing the tweet interactions through your map reduce workflow. What you gonna do when the twit_author key is @elonmusk? This guy has insane interaction. Basically means F for the reducer handling that @elonmusk tweets.&lt;&#x2F;p&gt;
+&lt;p&gt;I tried to write some but I realized I didn&#x27;t understand the part about handling skewed data.
+TODO&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-6-map-side-joins&quot;&gt;2-6 Map side joins&lt;&#x2F;h3&gt;
+&lt;p&gt;TODO&lt;&#x2F;p&gt;
+</description>
+      </item>
+      <item>
+          <title>About</title>
+          <pubDate>Tue, 17 Oct 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://yusufpapurcu.com/about/</link>
+          <guid>https://yusufpapurcu.com/about/</guid>
+          <description xml:base="https://yusufpapurcu.com/about/">&lt;p&gt;Hello! I&#x27;m Yusuf. I try to put my writings into here as posts. I hope it droves me to write&#x2F;do more things.&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;about-me&quot;&gt;About me&lt;&#x2F;h4&gt;
+&lt;p&gt;I&#x27;m a software engineer living in &lt;strong&gt;Porto&#x2F;Portugal&lt;&#x2F;strong&gt; currently. I&#x27;m 19 years old, even though I&#x27;m young I have couple of years of experience in software engineering. If you&#x27;re interested here is my &lt;a href=&quot;https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;yusufpapurcu&#x2F;&quot;&gt;LinkedIn&lt;&#x2F;a&gt;. Drop me a connection!&lt;&#x2F;p&gt;
+&lt;p&gt;Other than this fancy hobby (which unfortunately turned into a job) I love watching anime and reading manga. Not a diehard Japanese culture addict but I started to learn the language really long time ago and now I can understand when someone greets me xd.&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;about-this-blog&quot;&gt;About this blog&lt;&#x2F;h4&gt;
+&lt;p&gt;I don&#x27;t know what to write but I think it will be mainly about programming. Let&#x27;s see how long this one will stay alive xd&lt;&#x2F;p&gt;
+</description>
+      </item>
+      <item>
+          <title>Another spark of energy to write</title>
+          <pubDate>Sun, 15 Oct 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://yusufpapurcu.com/post/my-nth-attempt-to-blogging/</link>
+          <guid>https://yusufpapurcu.com/post/my-nth-attempt-to-blogging/</guid>
+          <description xml:base="https://yusufpapurcu.com/post/my-nth-attempt-to-blogging/">&lt;p&gt;&amp;quot;Here we go again&amp;quot; that was my inner voice after taking the first step into setting this website. I usually create&#x2F;delete one blog website per year. I think even google domains get sick of my A record and routing changes and sold their business to squarespace (it&#x27;s a joke in case if you don&#x27;t understand irony)&lt;&#x2F;p&gt;
+</description>
+      </item>
+    </channel>
+</rss>

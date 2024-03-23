@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://yusufpapurcu.com/</loc>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/about/</loc>
+        <lastmod>2023-10-17</lastmod>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/categories/</loc>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/post/</loc>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/post/implementing-redis-with-rust/</loc>
+        <lastmod>2024-03-24</lastmod>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/post/mapreduce/</loc>
+        <lastmod>2023-10-29</lastmod>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/post/my-nth-attempt-to-blogging/</loc>
+        <lastmod>2023-10-15</lastmod>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/post/techdebt/</loc>
+        <lastmod>2023-11-05</lastmod>
+    </url>
+    <url>
+        <loc>https://yusufpapurcu.com/tags/</loc>
+    </url>
+</urlset>

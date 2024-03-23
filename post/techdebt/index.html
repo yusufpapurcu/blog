@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+<title>TechDebt Paper from Google | Yusuf&#x27;s Blog</title>
+
+  <link rel="shortcut icon" type="image/png" href="&#x2F;images&#x2F;favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link id="stylesheet" rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<div class="header">
+  <div class="site_title">
+    <p><a href="/"><img class="icon" src="https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;images&#x2F;logo.png" alt="Yusuf&#x27;s Blog"
+                                                                                 width="70" height=auto ></a></p>
+    <p><a href="/">&nbsp;Yusuf&#x27;s Blog</a></p>
+  </div>
+  <div class="menu">
+    <a href="/post">archives</a>
+    &nbsp;&nbsp;<a href="/about">about</a>
+  </div>
+</div>
+
+<body onload="getTheme()">
+  <section class="section">
+    <div class="container">
+      
+<p>
+  <div class="title_postpage">TechDebt Paper from Google</div>
+</p>
+<p>
+  <div class="date_postpage">2023-11-05</div>
+  <div class="taxonomies_postpage">
+  
+  
+  </div>
+</p>
+
+<p>
+  <p><strong>Table of Contents:</strong></p>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/techdebt/#disclaimer">Disclaimer</a></li>
+<li><a href="https://yusufpapurcu.com/post/techdebt/#introduction">Introduction</a></li>
+<li><a href="https://yusufpapurcu.com/post/techdebt/#categories-of-tech-debt">Categories of Tech Debt</a></li>
+<li><a href="https://yusufpapurcu.com/post/techdebt/#how-to-handle-tech-debts-my-ideas">How to Handle Tech Debts? (my ideas)</a></li>
+<li><a href="https://yusufpapurcu.com/post/techdebt/#how-to-handle-tech-debts-what-paper-says">How to Handle Tech Debts? (what paper says)</a></li>
+</ul>
+<h2 id="disclaimer">Disclaimer</h2>
+<p>This writing heavily involves my views, if you want to see the actual paper(5 pages), here is the sauce -&gt; <a href="https://www.computer.org/csdl/magazine/so/2023/03/10109339/1MESXKyAYNO">https://www.computer.org/csdl/magazine/so/2023/03/10109339/1MESXKyAYNO</a></p>
+<h2 id="introduction">Introduction</h2>
+<p>We kickstart the paper with the history of <strong>Technical debt</strong> definition. <a href="https://en.wikipedia.org/wiki/Ward_Cunningham">Ward Cunningham</a> gives the definition in this sentence:</p>
+<blockquote>
+<p>Shipping first time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite. </p>
+</blockquote>
+<p>He also mentions that engineering organizations can went stand-still mode under highly unpaid TechDebt.</p>
+<p>We can say the TechDebt as a term means the negative side in tradeoff between Delivery Speed and Quality (not always shows up in product level). It's important to <strong>not</strong> use this term as an excuse to engineers writing bad code.</p>
+<h2 id="categories-of-tech-debt">Categories of Tech Debt</h2>
+<p>Then we are moving into the research itself, Google collects data about the internal teams view on TechDebt through engineering satisfaction surveys.</p>
+<p>And from these surveys, they refined 10 categories of TechDebt.</p>
+<ul>
+<li>Migration needed/in progress.
+<ul>
+<li>I think this references things in project level, as an example migrating a temporary solution into proper place. It's quite common to create quick (and non-properly placed) solutions to unblock product.</li>
+<li>Let's imagine a example, you need to send settlement report emails into your clients. Proper way of doing this is exporting settlement data from settlement processing system and handling the report creation outside of that domain right? But in reality it's quite common for settlement system to own this responsibility for some time until proper solution is ready.</li>
+<li>In the example it might be a big techdebt for engineers in settlement processing, but in the other hand it's better to do this fast and unblock legal issues.</li>
+</ul>
+</li>
+<li>Documentation on projects and APIs.
+<ul>
+<li>I can relate to this easily. API documentation is a thing you could automate, but project documentation requires pure effort most of the time. And missing documentation slows down the team in the long run.</li>
+</ul>
+</li>
+<li>Testing
+<ul>
+<li>Not testing experimental features/modules in your system might help to speedup development (not always). But once that experimental thingy start used seriously testing is a must.</li>
+<li>For long run having trustable tests helps changes to be applied much easily and without fear. Also (for me) tests could be considered a good part of documentation. Since they give a good idea about the behavior.</li>
+</ul>
+</li>
+<li>Code Quality
+<ul>
+<li>No one likes working on poorly designed code bases.</li>
+<li>Worth to mention code quality could decrease by time even you don't change it.</li>
+</ul>
+</li>
+<li>Cleanup of the Dead code. 
+<ul>
+<li>Features removed/replaced in higher level but not cleaned up properly.</li>
+</ul>
+</li>
+<li>Code degradation
+<ul>
+<li>This is the part I mentioned in code quality. tbh they relate a lot and I'm having issues to differentiate them.</li>
+<li>Maybe we can say code quality is covers a higher scope. Degradation is just a sub-scope.</li>
+</ul>
+</li>
+<li>Team expertise on Project 
+<ul>
+<li>This happens after handovers and starting of the projects. </li>
+<li>If the team doesn't grab the essence of the project they might fail to maintain, or even properly design it.</li>
+</ul>
+</li>
+<li>Unstable Dependencies
+<ul>
+<li>It explains itself quite a bit. Having a changing dependency might be exhausting. </li>
+<li>If it's on a legacy/on-maintenance project, exhausting effect gets buffed xd</li>
+</ul>
+</li>
+<li>Migrations Poorly Executed
+<ul>
+<li>You might end up having this state between migrations or abandonment of a migration. Bad side is having to maintain different code bases doing similar things.</li>
+</ul>
+</li>
+<li>Release of a Project
+<ul>
+<li>As an example, rolling up a new feature without observability creates this type of techdebt. It's a visible trade-off to take.</li>
+</ul>
+</li>
+</ul>
+<p>All code has techdebts and the type of a technical debt could change between projects.</p>
+<p>Techdebt definition is includes the current and possible better version of the codebase.</p>
+<h2 id="how-to-handle-tech-debts-my-ideas">How to Handle Tech Debts? (my ideas)</h2>
+<p>In the part of measuring, paper goes and talks about their failing experiments. I will just write the doable way in my view.</p>
+<p>Create a TechDebt section in your work management tool, let engineers create, classify and rate techdebts they faced. This is a good and applicable way to measure tech debt from my understanding.</p>
+<h2 id="how-to-handle-tech-debts-what-paper-says">How to Handle Tech Debts? (what paper says)</h2>
+<p>To manage technical debt paper gives these three ways:</p>
+<ul>
+<li>TechDebt management framework.</li>
+<li>TechDebt management maturity model.
+<ul>
+<li>Reactive 
+<ul>
+<li>They don't have any process against the techdebts.</li>
+<li>Doesn't mean they don't work on them, everyone works on techdebts. Reactive teams just doesn't have a process in place to manage their techdebts.</li>
+</ul>
+</li>
+<li>Proactive 
+<ul>
+<li>They define and track techdebts. Also they rate their urgency and how important are they for relevant work.</li>
+</ul>
+</li>
+<li>Strategic
+<ul>
+<li>As a plus to proactive maturity, they identify/address route causes and do proper decision making on them.</li>
+</ul>
+</li>
+<li>Structural
+<ul>
+<li>As a plus to strategic maturity, they standardize the techdebt management.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Evangelism on best practices to manage TechDebt.</li>
+<li>Proper tooling for identification and management of TechDebt.</li>
+</ul>
+<p>So that's all from the paper. I'm on my way to try out classification and management procedures. Hope you read until here.</p>
+
+  <hr class="hr_bottom"/>
+</p>
+
+
+
+
+    </div>
+  </section>
+</body>
+
+<div class="footer">
+  <a href="/">Yusuf&#x27;s Blog</a>&emsp;&copy; yusufpapurcu<br>
+  powered by <a href="https://www.getzola.org/">Zola</a>, theme <a
+    href="https://github.com/kyoheiu/emily_zola_theme">emily</a>.
+</div>
+
+</html>

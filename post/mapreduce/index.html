@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+<title>MapReduce | Yusuf&#x27;s Blog</title>
+
+  <link rel="shortcut icon" type="image/png" href="&#x2F;images&#x2F;favicon.png">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link id="stylesheet" rel="stylesheet" type="text/css" href="/main.css">
+</head>
+
+<div class="header">
+  <div class="site_title">
+    <p><a href="/"><img class="icon" src="https:&#x2F;&#x2F;yusufpapurcu.com&#x2F;images&#x2F;logo.png" alt="Yusuf&#x27;s Blog"
+                                                                                 width="70" height=auto ></a></p>
+    <p><a href="/">&nbsp;Yusuf&#x27;s Blog</a></p>
+  </div>
+  <div class="menu">
+    <a href="/post">archives</a>
+    &nbsp;&nbsp;<a href="/about">about</a>
+  </div>
+</div>
+
+<body onload="getTheme()">
+  <section class="section">
+    <div class="container">
+      
+<p>
+  <div class="title_postpage">MapReduce</div>
+</p>
+<p>
+  <div class="date_postpage">2023-10-29</div>
+  <div class="taxonomies_postpage">
+  
+  
+  </div>
+</p>
+
+<p>
+  <p><strong>Table of Contents:</strong></p>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#1-this-part-is-from-mit-course">1 This part is from MIT course</a>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#1-1-implement-simple-map-and-reduce-specification">1-1 Implement simple Map and Reduce specification.</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#1-2-finish-the-implementation-contains-master-and-multiple-workers">1-2 Finish the implementation contains master and multiple workers.</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#1-3-add-durability-against-the-worker-failures">1-3 Add durability against the worker failures.</a></li>
+</ul>
+</li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-this-part-is-from-ddia-book">2 This part is from DDIA book</a>
+<ul>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-1-from-syntax-perspective">2-1 From syntax perspective</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-2-from-data-processing-perspective">2-2 From data processing perspective</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-3-sort-merge-joins">2-3 Sort merge joins</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-4-group-by-with-mapreduce">2-4 Group by with MapReduce</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-5-handling-skew">2-5 Handling skew</a></li>
+<li><a href="https://yusufpapurcu.com/post/mapreduce/#2-6-map-side-joins">2-6 Map side joins</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="1-this-part-is-from-mit-course">1 This part is from MIT course</h2>
+<p>I'm studying about distributes systems and one of my resources is MIT Distributed systems course (6.824). In this course as a first lesson you read the map reduce paper (original one from google) and do a really simple example on top of already built application. So the tasks are:</p>
+<h3 id="1-1-implement-simple-map-and-reduce-specification">1-1 Implement simple Map and Reduce specification.</h3>
+<hr />
+<p>Yep it's the same one in the paper, but bit simpler and sequentially processed one.</p>
+<p>I'm quite impressed how easy to create a specification for MapReduce. It's really impressive to be able to define a simple task and run distributed on big data.</p>
+<h3 id="1-2-finish-the-implementation-contains-master-and-multiple-workers">1-2 Finish the implementation contains master and multiple workers.</h3>
+<hr />
+<p>Actually they have the implementation in place. Only thing you need to do is the writing the master. Some simple worker group code, just use channels and goroutines.</p>
+<p>The impressive part in here for me is how easy to manage work from the master. The abstraction was nicely done with small chunk of code. Also tests are impressive too. I didn't think testing this kind of separated system to be that simple.</p>
+<h3 id="1-3-add-durability-against-the-worker-failures">1-3 Add durability against the worker failures.</h3>
+<hr />
+<p>In google's paper it says for every MapReduce run there is 1.2 workers failing in average. Thinking that the durability is really important.</p>
+<p>So for this one impressive part is having the idempotent implementation. Because executing same job twice doesn't effect the final solution it was much easier to handle errors. Also in original paper I read that google runs functions with backups, even the main program doesn't fail it's possible that backup finishes the work faster.</p>
+<h2 id="2-this-part-is-from-ddia-book">2 This part is from DDIA book</h2>
+<p>DDIA: Designing Data Intensive Applications</p>
+<p>There is two mentions to the MapReduce in here.</p>
+<h3 id="2-1-from-syntax-perspective">2-1 From syntax perspective</h3>
+<p>In this part, book compares SQL statements, MapReduce and MongoDB aggregation pipeline. Between these three MapReduce is the imperative one. The other two is declarative.</p>
+<p>Also it's mentioned how useful MapReduce when it's idempotent. But even though a declarative SQL allows engine to optimize functions much better.</p>
+<h3 id="2-2-from-data-processing-perspective">2-2 From data processing perspective</h3>
+<p>It mentions that MapReduce is really similar to the unix tooling. You have a splitter, then you map entries coming from splitting, after you done with it you reduce the results. The main advantage is you can run them in multiple workers across the cluster.</p>
+<p>Also mentions that usually single MapReduce is not enough for the wanted result. So it's a common practice to chain jobs into each other. Just like pipelining unix commands.</p>
+<h3 id="2-3-sort-merge-joins">2-3 Sort merge joins</h3>
+<p>So in case of joining data into MapReduce workflow the book suggest to get a snapshot of the resource to be joined and include it inside the pipeline. So you can have your main data and join data included into same reduce worker. And even you can sort the files in a order to always have 1 metadata and records back to back. I don't want to rewrite same example but it's really well explained in book. (page 403) Most insane part for me is being able to do a complex operation in a really high performance and total abstraction. Imagine as a data analyst writing MapReduce specification, you don't deal with most things.</p>
+<h3 id="2-4-group-by-with-mapreduce">2-4 Group by with MapReduce</h3>
+<p>Lol it's literally picking the correct KEY to emit from the map. Reduce will do the grouping in the output file.</p>
+<h3 id="2-5-handling-skew">2-5 Handling skew</h3>
+<p>This is a new term to me. But basically it means handling the hot keys. Imagine you're processing the tweet interactions through your map reduce workflow. What you gonna do when the twit_author key is @elonmusk? This guy has insane interaction. Basically means F for the reducer handling that @elonmusk tweets.</p>
+<p>I tried to write some but I realized I didn't understand the part about handling skewed data.
+TODO</p>
+<h3 id="2-6-map-side-joins">2-6 Map side joins</h3>
+<p>TODO</p>
+
+  <hr class="hr_bottom"/>
+</p>
+
+
+
+
+    </div>
+  </section>
+</body>
+
+<div class="footer">
+  <a href="/">Yusuf&#x27;s Blog</a>&emsp;&copy; yusufpapurcu<br>
+  powered by <a href="https://www.getzola.org/">Zola</a>, theme <a
+    href="https://github.com/kyoheiu/emily_zola_theme">emily</a>.
+</div>
+
+</html>
