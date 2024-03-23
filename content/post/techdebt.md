@@ -2,10 +2,18 @@
 title = "TechDebt Paper from Google"
 date = 2023-11-05
 +++
+**Table of Contents:**
+- [Disclaimer](#disclaimer)
+- [Introduction](#introduction)
+- [Categories of Tech Debt](#categories-of-tech-debt)
+- [How to Handle Tech Debts? (my ideas)](#how-to-handle-tech-debts-my-ideas)
+- [How to Handle Tech Debts? (what paper says)](#how-to-handle-tech-debts-what-paper-says)
 
+## Disclaimer
 This writing heavily involves my views, if you want to see the actual paper(5 pages), here is the sauce -> [https://www.computer.org/csdl/magazine/so/2023/03/10109339/1MESXKyAYNO](https://www.computer.org/csdl/magazine/so/2023/03/10109339/1MESXKyAYNO)
 
-So we kickstart the paper with the history of **Technical debt** definition. [Ward Cunningham](https://en.wikipedia.org/wiki/Ward_Cunningham) gives the definition in this sentence:
+## Introduction
+We kickstart the paper with the history of **Technical debt** definition. [Ward Cunningham](https://en.wikipedia.org/wiki/Ward_Cunningham) gives the definition in this sentence:
 
 > Shipping first time code is like going into debt. A little debt speeds development so long as it is paid back promptly with a rewrite. 
 
@@ -13,8 +21,7 @@ He also mentions that engineering organizations can went stand-still mode under 
 
 We can say the TechDebt as a term means the negative side in tradeoff between Delivery Speed and Quality (not always shows up in product level). It's important to **not** use this term as an excuse to engineers writing bad code.
 
----
-
+## Categories of Tech Debt
 Then we are moving into the research itself, Google collects data about the internal teams view on TechDebt through engineering satisfaction surveys.
 
 And from these surveys, they refined 10 categories of TechDebt.
@@ -50,14 +57,12 @@ All code has techdebts and the type of a technical debt could change between pro
 
 Techdebt definition is includes the current and possible better version of the codebase.
 
----
-
+## How to Handle Tech Debts? (my ideas)
 In the part of measuring, paper goes and talks about their failing experiments. I will just write the doable way in my view.
 
 Create a TechDebt section in your work management tool, let engineers create, classify and rate techdebts they faced. This is a good and applicable way to measure tech debt from my understanding.
 
----
-
+## How to Handle Tech Debts? (what paper says)
 To manage technical debt paper gives these three ways:
 - TechDebt management framework.
 - TechDebt management maturity model.
